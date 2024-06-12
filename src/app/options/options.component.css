@@ -1,0 +1,12 @@
+.options-container {
+  display: grid;
+  grid-template-columns: 20% 40%;
+  justify-items: center;
+  align-items: center;
+}
+
+.number-inputs-form {
+  margin-left: 20px;
+  display: grid;
+  grid-template-rows: repeat(2, 1fr);
+}
