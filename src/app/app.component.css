@@ -1,0 +1,21 @@
+:host {
+  --content-padding: 10px;
+}
+header {
+  display: block;
+  height: 60px;
+  padding: var(--content-padding);
+  box-shadow: 0px 5px 25px var(--shadow-color);
+}
+.content {
+  padding: var(--content-padding);
+}
+.brand-logo {
+  width: auto; /* Adjust the width as needed */
+  height: 50px; /* Keeps the aspect ratio */
+  filter: red; /* Change to the desired color */
+}
+
+.brand-logo path {
+  fill: red; /* Change to the desired color */
+}
