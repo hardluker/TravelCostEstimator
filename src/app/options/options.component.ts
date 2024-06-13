@@ -20,6 +20,7 @@ import { Component } from '@angular/core';
         <div>
           <label>Additional Costs<input type="number" /></label>
         </div>
+        <button class="btn btn-circle" type="button">Press Me</button>
       </form>
     </section>
   `,
