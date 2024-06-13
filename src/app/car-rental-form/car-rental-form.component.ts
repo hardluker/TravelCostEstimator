@@ -5,12 +5,14 @@ import { Component } from '@angular/core';
   standalone: true,
   imports: [],
   template: `
-    <div class="card border-left-primary shadow py-1 h-100">
+    <div class="card border-left-primary shadow py-1 h-100 ">
       <div class="card-header py-3">
         <h6 class="m-0 font-weight-bold text-primary">Car Rental</h6>
       </div>
-      <form class="card-body d-flex flex-column flex-grow-1">
-        <div class="form-group">
+      <form
+        class="card-body d-flex flex-column justify-content-between flex-grow-1"
+      >
+        <div class="form-group mt-auto">
           <label for="pickup-airport">Pickup Airport</label>
           <input
             id="pickup-airport"
@@ -19,7 +21,7 @@ import { Component } from '@angular/core';
             type="text"
           />
         </div>
-        <div class="form-group">
+        <div class="form-group mt-auto">
           <label for="pickup-date">Pickup Date</label>
           <input
             id="pickup-date"
@@ -27,7 +29,7 @@ import { Component } from '@angular/core';
             type="date"
           />
         </div>
-        <div class="form-group">
+        <div class="form-group mt-auto">
           <label for="dropoff-date">Drop-Off Date</label>
           <input
             id="dropoff-date"
@@ -35,7 +37,7 @@ import { Component } from '@angular/core';
             type="date"
           />
         </div>
-        <div class="user form-group mt-auto d-flex align-content-end">
+        <div class="user form-group mt-auto">
           <input class="btn btn-primary" type="submit" />
         </div>
       </form>
