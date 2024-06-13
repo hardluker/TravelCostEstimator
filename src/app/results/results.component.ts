@@ -11,13 +11,44 @@ import { Component } from '@angular/core';
           <h6 class="m-0 font-weight-bold text-success">Results</h6>
         </div>
         <div class="card-body">
-          <p>Markup Percentage: 20%</p>
-          <p>Additional Costs: $0.00</p>
-          <p>Flight 1 Cost: $100.00</p>
-          <p>Flight 2 Cost: $100.00</p>
-          <p>Car Rental Cost: $100.00</p>
-          <p>Hotel Cost: $100.00</p>
-          <p class="font-weight-bold">Total Cost: $480.00</p>
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Service</th>
+                <th scope="col">Cost</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Markup Percentage</th>
+                <td>20%</td>
+              </tr>
+              <tr>
+                <th scope="row">Additional Costs</th>
+                <td>$0.00</td>
+              </tr>
+              <tr>
+                <th scope="row">Flight 1</th>
+                <td>$100.00</td>
+              </tr>
+              <tr>
+                <th scope="row">Flight 2</th>
+                <td>$100.00</td>
+              </tr>
+              <tr>
+                <th scope="row">Car Rental</th>
+                <td>$100.00</td>
+              </tr>
+              <tr>
+                <th scope="row">Hotel</th>
+                <td>$100.00</td>
+              </tr>
+              <tr>
+                <th scope="row">Total</th>
+                <td class="font-weight-bold">$480.00</td>
+              </tr>
+            </tbody>
+          </table>
           <button class="btn btn-success" type="button">Calculate total</button>
         </div>
       </div>
