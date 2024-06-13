@@ -1,26 +1,32 @@
 import { Component } from '@angular/core';
+import { FlightFormComponent } from '../flight-form/flight-form.component';
 
 @Component({
   selector: 'app-options',
   standalone: true,
-  imports: [],
+  imports: [FlightFormComponent],
   template: `
     <section class="container-fluid">
       <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-3 mt-2">
           <div class="card border-left-primary shadow h-100 w-100 py-1">
             <form class="card-body">
-              <label><input type="checkbox" name="flight1" />Flight 1</label
+              <input type="checkbox" name="flight1" /><label class="pl-1"
+                >Flight 1</label
               ><br />
-              <label><input type="checkbox" name="flight2" />Flight 2</label
+              <input type="checkbox" name="flight2" /><label class="pl-1"
+                >Flight 2</label
               ><br />
-              <label><input type="checkbox" name="carRental" />Car Rental</label
+              <input type="checkbox" name="car-rental" /><label class="pl-1"
+                >Car Rental</label
               ><br />
-              <label><input type="checkbox" name="hotels" />Hotels</label>
+              <input type="checkbox" name="hotel" /><label class="pl-1"
+                >Hotel</label
+              ><br />
             </form>
           </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3 mt-2">
           <div class="card border-left-primary shadow h-100 w-100 py-2">
             <form class="user p-2">
               <div class="form-group">
@@ -42,6 +48,7 @@ import { Component } from '@angular/core';
         </div>
       </div>
     </section>
+    <app-flight-form></app-flight-form>
   `,
   styleUrl: './options.component.css',
 })
