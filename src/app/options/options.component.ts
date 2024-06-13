@@ -2,10 +2,16 @@ import { Component } from '@angular/core';
 import { FlightFormComponent } from '../flight-form/flight-form.component';
 import { ResultsComponent } from '../results/results.component';
 import { CarRentalFormComponent } from '../car-rental-form/car-rental-form.component';
+import { HotelFormComponent } from '../hotel-form/hotel-form.component';
 @Component({
   selector: 'app-options',
   standalone: true,
-  imports: [FlightFormComponent, CarRentalFormComponent, ResultsComponent],
+  imports: [
+    FlightFormComponent,
+    CarRentalFormComponent,
+    HotelFormComponent,
+    ResultsComponent,
+  ],
   template: `
     <section class="container-fluid">
       <div class="row">
@@ -63,16 +69,13 @@ import { CarRentalFormComponent } from '../car-rental-form/car-rental-form.compo
           <app-flight-form></app-flight-form>
         </div>
         <div class="col-lg-3 col-md-6 mb-3">
+          <app-flight-form></app-flight-form>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
           <app-car-rental-form></app-car-rental-form>
         </div>
         <div class="col-lg-3 col-md-6 mb-3">
-          <app-flight-form></app-flight-form>
-        </div>
-        <div class="col-lg-3 col-md-6 mb-3">
-          <app-flight-form></app-flight-form>
-        </div>
-        <div class="col-lg-3 col-md-6 mb-3">
-          <app-flight-form></app-flight-form>
+          <app-hotel-form></app-hotel-form>
         </div>
       </div>
     </section>
