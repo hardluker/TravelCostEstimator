@@ -11,7 +11,7 @@ import { ResultsComponent } from '../results/results.component';
         <div class="col-md-3 mt-2">
           <div class="card border-left-primary shadow h-100 w-100 py-1">
             <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">Options</h6>
+              <h6 class="m-0 font-weight-bold text-primary">Expenses</h6>
             </div>
             <form class="card-body">
               <input type="checkbox" name="flight1" /><label class="pl-1"
@@ -35,18 +35,20 @@ import { ResultsComponent } from '../results/results.component';
               <h6 class="m-0 font-weight-bold text-primary">Markups</h6>
             </div>
             <form class="card-body p-2">
-              <div class="form-group">
+              <div class="user form-group">
+                <label for="carrier">Markup Percentage</label>
                 <input
+                  id="markup-percentage"
                   class="form-control form-control-user"
                   type="number"
-                  placeholder="Markup %"
                 />
               </div>
-              <div class="form-group pt-3">
+              <div class="user form-group">
+                <label for="carrier">Additional Costs</label>
                 <input
+                  id="additional-costs"
                   class="form-control form-control-user"
                   type="number"
-                  placeholder="Additional Costs"
                 />
               </div>
             </form>
@@ -70,7 +72,7 @@ import { ResultsComponent } from '../results/results.component';
         </div>
       </div>
     </section>
-    <section>
+    <section class="container-fluid">
       <app-results></app-results>
     </section>
   `,
