@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { FlightFormComponent } from '../flight-form/flight-form.component';
-
+import { ResultsComponent } from '../results/results.component';
 @Component({
   selector: 'app-options',
   standalone: true,
-  imports: [FlightFormComponent],
+  imports: [FlightFormComponent, ResultsComponent],
   template: `
     <section class="container-fluid">
       <div class="row">
@@ -69,6 +69,9 @@ import { FlightFormComponent } from '../flight-form/flight-form.component';
           <app-flight-form></app-flight-form>
         </div>
       </div>
+    </section>
+    <section>
+      <app-results></app-results>
     </section>
   `,
   styleUrl: './options.component.css',
