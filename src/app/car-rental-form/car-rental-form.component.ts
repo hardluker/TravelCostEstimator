@@ -12,7 +12,7 @@ import { Component } from '@angular/core';
       <form
         class="card-body d-flex flex-column justify-content-between flex-grow-1"
       >
-        <div class="form-group mt-auto">
+        <div class="form-group">
           <label for="pickup-airport">Pickup Airport</label>
           <input
             id="pickup-airport"
