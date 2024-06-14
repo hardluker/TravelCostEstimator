@@ -56,20 +56,30 @@ import { HotelFormComponent } from '../hotel-form/hotel-form.component';
             </div>
             <form class="card-body p-2">
               <div class="user form-group">
-                <label for="carrier">Markup Percentage</label>
-                <input
-                  id="markup-percentage"
-                  class="form-control form-control-user"
-                  type="number"
-                />
+                <label for="markup-percentage">Markup Percentage</label>
+                <div class="input-group">
+                  <input
+                    id="markup-percentage"
+                    class="form-control form-control-user"
+                    type="number"
+                  />
+                  <div class="input-group-append">
+                    <span class="input-group-text">%</span>
+                  </div>
+                </div>
               </div>
               <div class="user form-group">
-                <label for="carrier">Additional Costs</label>
-                <input
-                  id="additional-costs"
-                  class="form-control form-control-user"
-                  type="number"
-                />
+                <label for="additional-costs">Additional Costs</label>
+                <div class="input-group">
+                  <div class="input-group-append">
+                    <span class="input-group-text">$</span>
+                  </div>
+                  <input
+                    id="additional-costs"
+                    class="form-control form-control-user"
+                    type="number"
+                  />
+                </div>
               </div>
             </form>
           </div>
