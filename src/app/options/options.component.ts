@@ -99,8 +99,8 @@ import { HotelFormComponent } from '../hotel-form/hotel-form.component';
   styleUrls: ['./options.component.css'],
 })
 export class OptionsComponent {
-  showFlight1 = false;
+  showFlight1 = true;
   showFlight2 = false;
-  showCarRental = false;
-  showHotel = false;
+  showCarRental = true;
+  showHotel = true;
 }
