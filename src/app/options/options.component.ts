@@ -58,14 +58,16 @@ import { HotelFormComponent } from '../hotel-form/hotel-form.component';
               <div class="user form-group">
                 <label for="markup-percentage">Markup Percentage</label>
                 <div class="input-group">
+                  <div class="input-group-append">
+                    <span class="input-group-text">%</span>
+                  </div>
                   <input
                     id="markup-percentage"
                     class="form-control form-control-user"
                     type="number"
+                    [(ngModel)]="markupPercentage"
+                    name="markupPercentage"
                   />
-                  <div class="input-group-append">
-                    <span class="input-group-text">%</span>
-                  </div>
                 </div>
               </div>
               <div class="user form-group">
@@ -78,6 +80,8 @@ import { HotelFormComponent } from '../hotel-form/hotel-form.component';
                     id="additional-costs"
                     class="form-control form-control-user"
                     type="number"
+                    [(ngModel)]="additionalCosts"
+                    name="additionalCosts"
                   />
                 </div>
               </div>
@@ -113,4 +117,7 @@ export class OptionsComponent {
   showFlight2 = false;
   showCarRental = true;
   showHotel = true;
+
+  markupPercentage = 20.0;
+  additionalCosts = 0.0; // Default value for additional costs
 }
