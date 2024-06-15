@@ -7,6 +7,7 @@ import { AirportsService } from '../services/airports.service';
 import { Airport } from '../services/airports.service';
 import { CommonModule } from '@angular/common';
 import { FlightService } from '../services/flight.service';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-flight-form',
@@ -118,43 +119,68 @@ export class FlightFormComponent implements OnInit {
 
     this.flightService
       .getFlightItineraries(fromEntityId, toEntityId, departDate)
-      .subscribe((response) => {
-        // Delay for 10 seconds before making the second request
-        setTimeout(() => {
-          this.flightService
-            .getFlightItineraries(fromEntityId, toEntityId, departDate)
-            .subscribe((secondResponse: any) => {
-              const itinerariesSecond: any[] = secondResponse.data.itineraries;
+      .subscribe(
+        (response) => {
+          // Delay for 10 seconds before making the second request
+          setTimeout(() => {
+            this.flightService
+              .getFlightItineraries(fromEntityId, toEntityId, departDate)
+              .pipe(
+                finalize(() => {
+                  // This block will execute when the second observable stream completes,
+                  // regardless of whether it completes successfully or with an error.
+                  this.searching = false; // Set searching to false when search completes
+                })
+              )
+              .subscribe(
+                (secondResponse: any) => {
+                  const itinerariesSecond: any[] =
+                    secondResponse.data.itineraries;
 
-              // Filter itineraries by carrier
-              const filteredItineraries = itinerariesSecond.filter(
-                (itinerary: any) => {
-                  return itinerary.legs.some((leg: any) => {
-                    return leg.carriers.marketing.some((carrier: any) => {
-                      return (
-                        carrier.name === this.carrier || this.carrier === 'All'
-                      );
-                    });
-                  });
+                  // Filter itineraries by carrier
+                  const filteredItineraries = itinerariesSecond.filter(
+                    (itinerary: any) => {
+                      return itinerary.legs.some((leg: any) => {
+                        return leg.carriers.marketing.some((carrier: any) => {
+                          return (
+                            carrier.name === this.carrier ||
+                            this.carrier === 'All'
+                          );
+                        });
+                      });
+                    }
+                  );
+
+                  // Calculate average cost for filtered itineraries
+                  const totalCostSecond = filteredItineraries.reduce(
+                    (sum: number, itinerary: any) => sum + itinerary.price.raw,
+                    0
+                  );
+                  const averageCostSecond =
+                    totalCostSecond / filteredItineraries.length;
+
+                  this.averageCost = averageCostSecond;
+                  if (filteredItineraries.length === 0) {
+                    this.empty = true;
+                  } else {
+                    this.results = true;
+                  }
+                },
+                (error) => {
+                  // Handle error here
+                  console.error('Error occurred:', error);
+                  this.empty = true;
                 }
               );
-
-              // Calculate average cost for filtered itineraries
-              const totalCostSecond = filteredItineraries.reduce(
-                (sum: number, itinerary: any) => sum + itinerary.price.raw,
-                0
-              );
-              const averageCostSecond =
-                totalCostSecond / filteredItineraries.length;
-
-              this.averageCost = averageCostSecond;
-              this.searching = false; // Set searching to false when search completes
-              if (filteredItineraries.length === 0) {
-                this.empty = true;
-              } else this.results = true;
-            });
-        }, 10000);
-      });
+          }, 10000);
+        },
+        (error) => {
+          // Handle error here
+          console.error('Error occurred:', error);
+          this.searching = false; // Set searching to false when search completes
+          this.empty = true;
+        }
+      );
   }
 
   private getEntityId(airport: string): string {
