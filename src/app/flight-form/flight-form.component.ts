@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FlightService } from '../services/flight.service';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { CsvDataService } from '../services/csv-data.service';
 
 @Component({
   selector: 'app-flight-form',
@@ -22,7 +23,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
             id="departure-airport"
             name="departureAirport"
             [(ngModel)]="departureAirport"
-            [items]="names"
+            [items]="airports"
             name="departureAirport"
             required
           >
@@ -34,8 +35,8 @@ import { NgSelectModule } from '@ng-select/ng-select';
           <ng-select
             id="arrival-airport"
             name="arrivalAirport"
-            [(ngModel)]="departureAirport"
-            [items]="getKeys(airportMap)"
+            [(ngModel)]="arrivalAirport"
+            [items]=""
             name="arrivalAirport"
             required
           >
@@ -98,9 +99,12 @@ export class FlightFormComponent {
     'Nashville, TN - BNA': 'BNA',
     // Add more mappings as needed
   };
-  names: string[] = ['John', 'Jane', 'Doe'];
+  airports: string[] = [];
 
-  constructor(private flightService: FlightService) {}
+  constructor(
+    private flightService: FlightService,
+    private csvDataService: CsvDataService
+  ) {}
 
   onSubmit() {
     const fromEntityId = this.getEntityId(this.departureAirport);
