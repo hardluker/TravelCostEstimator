@@ -1,16 +1,16 @@
 // src/app/flight-form/flight-form.component.ts
 
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { FlightService } from '../services/flight.service';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { CsvDataService } from '../services/csv-data.service';
+import { AirportsService } from '../services/airports.service';
+import { Airport } from '../services/airports.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-flight-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgSelectModule],
+  imports: [FormsModule, NgSelectModule, CommonModule],
   template: `
     <div class="card border-left-primary shadow py-1">
       <div class="card-header py-3">
@@ -24,20 +24,17 @@ import { CsvDataService } from '../services/csv-data.service';
             name="departureAirport"
             [(ngModel)]="departureAirport"
             [items]="airports"
-            name="departureAirport"
             required
           >
           </ng-select>
         </div>
         <div class="form-group">
           <label for="arrival-airport">Arrival Airport</label>
-
           <ng-select
             id="arrival-airport"
             name="arrivalAirport"
             [(ngModel)]="arrivalAirport"
-            [items]=""
-            name="arrivalAirport"
+            [items]="airports"
             required
           >
           </ng-select>
@@ -77,16 +74,10 @@ import { CsvDataService } from '../services/csv-data.service';
         Average Cost: {{ averageCost | currency }}
       </div>
     </div>
-
-    <datalist id="airports">
-      <option value="San Francisco, CA - SFO"></option>
-      <option value="Nashville, TN - BNA"></option>
-      <!-- Add more airports as needed -->
-    </datalist>
   `,
   styleUrls: ['./flight-form.component.css'],
 })
-export class FlightFormComponent {
+export class FlightFormComponent implements OnInit {
   departureAirport: string = '';
   arrivalAirport: string = '';
   flightDate: string = '';
@@ -94,17 +85,23 @@ export class FlightFormComponent {
   averageCost: number = 0;
   searching: boolean = false;
   results: boolean = false;
-  airportMap: { [key: string]: string } = {
-    'San Francisco, CA - SFO': 'SFO',
-    'Nashville, TN - BNA': 'BNA',
-    // Add more mappings as needed
-  };
+  airportMap: { [key: string]: string } = {};
   airports: string[] = [];
 
-  constructor(
-    private flightService: FlightService,
-    private csvDataService: CsvDataService
-  ) {}
+  constructor(private airportsService: AirportsService) {}
+
+  ngOnInit() {
+    this.airportsService.getAirports().subscribe(
+      (data: Airport[]) => {
+        this.airports = data.map(
+          (airport) => `${airport.city}, ${airport.state} - ${airport.iata}`
+        );
+      },
+      (error) => {
+        console.error('Error retrieving airport data:', error);
+      }
+    );
+  }
 
   onSubmit() {
     const fromEntityId = this.getEntityId(this.departureAirport);
@@ -112,31 +109,18 @@ export class FlightFormComponent {
     const departDate = this.flightDate;
     this.searching = true;
 
-    this.flightService
-      .getFlightItineraries(fromEntityId, toEntityId, departDate)
-      .subscribe(() => {
-        // Delay for 10 seconds before making the second request
-        setTimeout(() => {
-          this.flightService
-            .getFlightItineraries(fromEntityId, toEntityId, departDate)
-            .subscribe((secondResponse) => {
-              // Second response processing
-              const itinerariesSecond = secondResponse.data.itineraries;
-              const totalCostSecond = itinerariesSecond.reduce(
-                (sum: number, itinerary: any) => sum + itinerary.price.raw,
-                0
-              );
-              this.averageCost = totalCostSecond / itinerariesSecond.length;
-              this.searching = false; // Set searching to false when search completes
-              this.results = true;
-            });
-        }, 10000);
-      });
+    // Simulate a flight service call
+    setTimeout(() => {
+      this.averageCost = Math.random() * 500; // Random cost for demonstration
+      this.searching = false;
+      this.results = true;
+    }, 2000);
   }
 
   private getEntityId(airport: string): string {
     return this.airportMap[airport] || '';
   }
+
   getKeys(map: any) {
     return Object.keys(map);
   }
