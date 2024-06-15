@@ -1,8 +1,11 @@
-// src/app/flight.service.ts
-
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {
+  HttpClient,
+  HttpHeaders,
+  HttpErrorResponse,
+} from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +19,7 @@ export class FlightService {
 
   constructor(private http: HttpClient) {}
 
-  //Function to get all flights from the skyscanner API
+  // Function to get all flights from the skyscanner API
   getFlightItineraries(
     fromEntityId: string,
     toEntityId: string,
@@ -28,6 +31,24 @@ export class FlightService {
       departDate,
     };
 
-    return this.http.get<any>(this.apiUrl, { params, headers: this.headers });
+    return this.http
+      .get<any>(this.apiUrl, { params, headers: this.headers })
+      .pipe(catchError(this.handleError));
+  }
+
+  // Handle HTTP errors
+  private handleError(error: HttpErrorResponse) {
+    if (error.error instanceof ErrorEvent) {
+      // A client-side or network error occurred. Handle it accordingly.
+      console.error('An error occurred:', error.error.message);
+    } else {
+      // The backend returned an unsuccessful response code.
+      // The response body may contain clues as to what went wrong.
+      console.error(
+        `Backend returned code ${error.status}, ` + `body was: ${error.error}`
+      );
+    }
+    // Return an observable with a user-facing error message.
+    return throwError('Something bad happened; please try again later.');
   }
 }
