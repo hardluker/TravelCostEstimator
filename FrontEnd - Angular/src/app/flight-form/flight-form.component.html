@@ -1,0 +1,85 @@
+<div class="card border-left-primary shadow py-1">
+  <div class="card-header py-3">
+    <h6 class="m-0 font-weight-bold text-primary">Flight</h6>
+  </div>
+  <form [formGroup]="flightForm" (ngSubmit)="onSubmit()" class="card-body">
+    <div class="form-group">
+      <label for="departure-airport">Departure Airport</label>
+      <ng-select
+        id="departure-airport"
+        formControlName="departureAirport"
+        [items]="airports"
+      >
+      </ng-select>
+      <div
+        *ngIf="
+          flightForm.controls['departureAirport'].invalid &&
+          flightForm.controls['departureAirport'].touched
+        "
+        class="text-danger"
+      >
+        Departure Airport is required
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="arrival-airport">Arrival Airport</label>
+      <ng-select
+        id="arrival-airport"
+        formControlName="arrivalAirport"
+        [items]="airports"
+      >
+      </ng-select>
+      <div
+        *ngIf="
+          flightForm.controls['arrivalAirport'].invalid &&
+          flightForm.controls['arrivalAirport'].touched
+        "
+        class="text-danger"
+      >
+        Arrival Airport is required
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="flight-date">Date</label>
+      <input
+        id="flight-date"
+        formControlName="flightDate"
+        class="form-control form-control-user"
+        type="date"
+      />
+      <div
+        *ngIf="
+          flightForm.controls['flightDate'].invalid &&
+          flightForm.controls['flightDate'].touched
+        "
+        class="text-danger"
+      >
+        Flight date is required
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="carrier">Carrier</label>
+      <ng-select formControlName="carrier" [items]="carriers"> </ng-select>
+    </div>
+    <div class="form-group">
+      <button
+        class="btn btn-primary"
+        type="submit"
+        [disabled]="searching || flightForm.invalid"
+      >
+        Search
+      </button>
+    </div>
+  </form>
+  <div
+    *ngIf="searching"
+    class="spinner-border text-primary"
+    role="status"
+  ></div>
+  <div *ngIf="results" class="average-cost alert alert-primary">
+    Average Cost: {{ averageCost | currency }}
+  </div>
+  <div *ngIf="empty" class="average-cost alert alert-danger">
+    No results found
+  </div>
+</div>
