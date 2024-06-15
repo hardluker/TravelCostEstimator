@@ -172,7 +172,7 @@ export class FlightFormComponent implements OnInit {
                   this.empty = true;
                 }
               );
-          }, 10000);
+          }, 2000);
         },
         (error) => {
           // Handle error here
@@ -188,7 +188,6 @@ export class FlightFormComponent implements OnInit {
     const parts = airport.split('-');
     // Get the last part (which should be the airport code)
     const airportCode = parts[parts.length - 1].trim();
-    console.log(airportCode);
     return airportCode;
   }
 
