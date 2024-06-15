@@ -16,6 +16,7 @@ export class FlightService {
 
   constructor(private http: HttpClient) {}
 
+  //Function to get all flights from the skyscanner API
   getFlightItineraries(
     fromEntityId: string,
     toEntityId: string,
