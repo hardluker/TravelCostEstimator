@@ -70,6 +70,9 @@ import { FlightService } from '../services/flight.service';
       <div *ngIf="results" class="average-cost alert alert-primary">
         Average Cost: {{ averageCost | currency }}
       </div>
+      <div *ngIf="empty" class="average-cost alert alert-danger">
+        No results found
+      </div>
     </div>
   `,
   styleUrls: ['./flight-form.component.css'],
@@ -84,7 +87,8 @@ export class FlightFormComponent implements OnInit {
   results: boolean = false;
   airportMap: { [key: string]: string } = {};
   airports: string[] = [];
-  carriers: string[] = ['All', 'Delta', 'American Airlines'];
+  carriers: string[] = ['All', 'American Airlines', 'Delta', 'United'];
+  empty: boolean = false;
 
   constructor(
     private airportsService: AirportsService,
@@ -109,24 +113,45 @@ export class FlightFormComponent implements OnInit {
     const toEntityId = this.getEntityId(this.arrivalAirport);
     const departDate = this.flightDate;
     this.searching = true;
+    this.results = false;
+    this.empty = false;
 
     this.flightService
       .getFlightItineraries(fromEntityId, toEntityId, departDate)
-      .subscribe(() => {
+      .subscribe((response) => {
         // Delay for 10 seconds before making the second request
         setTimeout(() => {
           this.flightService
             .getFlightItineraries(fromEntityId, toEntityId, departDate)
-            .subscribe((secondResponse) => {
-              // Second response processing
-              const itinerariesSecond = secondResponse.data.itineraries;
-              const totalCostSecond = itinerariesSecond.reduce(
+            .subscribe((secondResponse: any) => {
+              const itinerariesSecond: any[] = secondResponse.data.itineraries;
+
+              // Filter itineraries by carrier
+              const filteredItineraries = itinerariesSecond.filter(
+                (itinerary: any) => {
+                  return itinerary.legs.some((leg: any) => {
+                    return leg.carriers.marketing.some((carrier: any) => {
+                      return (
+                        carrier.name === this.carrier || this.carrier === 'All'
+                      );
+                    });
+                  });
+                }
+              );
+
+              // Calculate average cost for filtered itineraries
+              const totalCostSecond = filteredItineraries.reduce(
                 (sum: number, itinerary: any) => sum + itinerary.price.raw,
                 0
               );
-              this.averageCost = totalCostSecond / itinerariesSecond.length;
+              const averageCostSecond =
+                totalCostSecond / filteredItineraries.length;
+
+              this.averageCost = averageCostSecond;
               this.searching = false; // Set searching to false when search completes
-              this.results = true;
+              if (filteredItineraries.length === 0) {
+                this.empty = true;
+              } else this.results = true;
             });
         }, 10000);
       });
