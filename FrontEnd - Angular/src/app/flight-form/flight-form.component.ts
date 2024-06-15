@@ -6,6 +6,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { AirportsService } from '../services/airports.service';
 import { Airport } from '../services/airports.service';
 import { CommonModule } from '@angular/common';
+import { FlightService } from '../services/flight.service';
 
 @Component({
   selector: 'app-flight-form',
@@ -52,11 +53,7 @@ import { CommonModule } from '@angular/common';
         </div>
         <div class="user form-group">
           <label for="carrier">Carrier</label>
-          <ng-select
-            name="carrier"
-            [(ngModel)]="carrier"
-            [items]="getKeys(airportMap)"
-          >
+          <ng-select name="carrier" [(ngModel)]="carrier" [items]="carriers">
           </ng-select>
         </div>
         <div class="user form-group">
@@ -87,8 +84,12 @@ export class FlightFormComponent implements OnInit {
   results: boolean = false;
   airportMap: { [key: string]: string } = {};
   airports: string[] = [];
+  carriers: string[] = ['All', 'Delta', 'American Airlines'];
 
-  constructor(private airportsService: AirportsService) {}
+  constructor(
+    private airportsService: AirportsService,
+    private flightService: FlightService
+  ) {}
 
   ngOnInit() {
     this.airportsService.getAirports().subscribe(
@@ -109,16 +110,35 @@ export class FlightFormComponent implements OnInit {
     const departDate = this.flightDate;
     this.searching = true;
 
-    // Simulate a flight service call
-    setTimeout(() => {
-      this.averageCost = Math.random() * 500; // Random cost for demonstration
-      this.searching = false;
-      this.results = true;
-    }, 2000);
+    this.flightService
+      .getFlightItineraries(fromEntityId, toEntityId, departDate)
+      .subscribe(() => {
+        // Delay for 10 seconds before making the second request
+        setTimeout(() => {
+          this.flightService
+            .getFlightItineraries(fromEntityId, toEntityId, departDate)
+            .subscribe((secondResponse) => {
+              // Second response processing
+              const itinerariesSecond = secondResponse.data.itineraries;
+              const totalCostSecond = itinerariesSecond.reduce(
+                (sum: number, itinerary: any) => sum + itinerary.price.raw,
+                0
+              );
+              this.averageCost = totalCostSecond / itinerariesSecond.length;
+              this.searching = false; // Set searching to false when search completes
+              this.results = true;
+            });
+        }, 10000);
+      });
   }
 
   private getEntityId(airport: string): string {
-    return this.airportMap[airport] || '';
+    // Split the airport string by '-'
+    const parts = airport.split('-');
+    // Get the last part (which should be the airport code)
+    const airportCode = parts[parts.length - 1].trim();
+    console.log(airportCode);
+    return airportCode;
   }
 
   getKeys(map: any) {
