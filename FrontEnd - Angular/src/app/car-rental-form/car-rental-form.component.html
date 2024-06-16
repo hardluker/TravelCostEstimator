@@ -1,0 +1,84 @@
+<div class="card border-left-primary shadow py-1 h-100">
+  <div class="card-header py-3">
+    <h6 class="m-0 font-weight-bold text-primary">Car Rental</h6>
+  </div>
+  <form
+    [formGroup]="carRentalForm"
+    class="card-body d-flex flex-column justify-content-between flex-grow-1"
+    (ngSubmit)="onSubmit()"
+  >
+    <div class="form-group">
+      <label for="pickup-airport">Pickup Airport</label>
+      <ng-select
+        id="pickup-airport"
+        formControlName="pickupAirport"
+        [items]="airports"
+      ></ng-select>
+      <div
+        *ngIf="
+          carRentalForm.controls['pickupAirport'].invalid &&
+          carRentalForm.controls['pickupAirport'].touched
+        "
+        class="text-danger"
+      >
+        Pickup Airport is required
+      </div>
+    </div>
+    <div class="form-group mt-auto">
+      <label for="pickup-date">Pickup Date</label>
+      <input
+        id="pickup-date"
+        formControlName="pickupDate"
+        class="form-control form-control-user"
+        type="date"
+      />
+      <div
+        *ngIf="
+          carRentalForm.controls['pickupDate'].invalid &&
+          carRentalForm.controls['pickupDate'].touched
+        "
+        class="text-danger"
+      >
+        Pickup Date is required
+      </div>
+    </div>
+    <div class="form-group mt-auto">
+      <label for="dropoff-date">Drop-Off Date</label>
+      <input
+        id="dropoff-date"
+        formControlName="dropoffDate"
+        class="form-control form-control-user"
+        type="date"
+      />
+      <div
+        *ngIf="
+          carRentalForm.controls['dropoffDate'].invalid &&
+          carRentalForm.controls['dropoffDate'].touched
+        "
+        class="text-danger"
+      >
+        Drop-Off Date is required
+      </div>
+    </div>
+    <div class="user form-group mt-auto">
+      <button
+        class="btn btn-primary"
+        type="submit"
+        [disabled]="searching || carRentalForm.invalid"
+      >
+        Search
+      </button>
+    </div>
+    <div
+      *ngIf="searching"
+      class="spinner-border text-primary"
+      role="status"
+    ></div>
+  </form>
+  <div *ngIf="results" class="alert alert-primary">
+    Average Cost: {{ averageCost | currency }}
+  </div>
+  <div *ngIf="empty" class="average-cost alert alert-danger">
+    No results found
+  </div>
+</div>

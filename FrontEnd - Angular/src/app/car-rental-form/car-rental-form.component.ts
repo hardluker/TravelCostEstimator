@@ -1,7 +1,10 @@
-// src/app/car-rental-form/car-rental-form.component.ts
-
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { CarRentalService } from '../services/car-rental.service';
 import { CommonModule } from '@angular/common';
 import { AirportsService } from '../services/airports.service';
@@ -13,79 +16,29 @@ import { throwError } from 'rxjs/internal/observable/throwError';
 @Component({
   selector: 'app-car-rental-form',
   standalone: true,
-  imports: [FormsModule, CommonModule, NgSelectModule],
-  template: `
-    <div class="card border-left-primary shadow py-1 h-100">
-      <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Car Rental</h6>
-      </div>
-      <form
-        class="card-body d-flex flex-column justify-content-between flex-grow-1"
-        (ngSubmit)="onSubmit()"
-      >
-        <div class="form-group">
-          <label for="pickup-airport">Pickup Airport</label>
-          <ng-select
-            id="pickup-airport"
-            name="pickupAirport"
-            [(ngModel)]="pickupAirport"
-            [items]="airports"
-            required
-          />
-        </div>
-        <div class="form-group mt-auto">
-          <label for="pickup-date">Pickup Date</label>
-          <input
-            id="pickup-date"
-            name="pickupDate"
-            [(ngModel)]="pickupDate"
-            class="form-control form-control-user"
-            type="date"
-            required
-          />
-        </div>
-        <div class="form-group mt-auto">
-          <label for="dropoff-date">Drop-Off Date</label>
-          <input
-            id="dropoff-date"
-            name="dropoffDate"
-            [(ngModel)]="dropoffDate"
-            class="form-control form-control-user"
-            type="date"
-            required
-          />
-        </div>
-        <div class="user form-group mt-auto">
-          <button class="btn btn-primary" type="submit" [disabled]="searching">
-            Submit
-          </button>
-        </div>
-        <div
-          *ngIf="searching"
-          class="spinner-border text-primary"
-          role="status"
-        ></div>
-      </form>
-      <div *ngIf="results" class="alert alert-primary">
-        Average Cost: {{ averageCost | currency }}
-      </div>
-    </div>
-  `,
+  imports: [ReactiveFormsModule, CommonModule, NgSelectModule],
+  templateUrl: './car-rental-form.component.html',
   styleUrls: ['./car-rental-form.component.css'],
 })
 export class CarRentalFormComponent {
-  pickupAirport: string = '';
-  pickupDate: string = '';
-  dropoffDate: string = '';
-  averageCost: number | null = null;
+  carRentalForm: FormGroup;
   airports: string[] = [];
   searching: boolean = false;
   results: boolean = false;
+  empty: boolean = false;
+  averageCost: number | null = null;
 
   constructor(
+    private fb: FormBuilder,
     private carRentalService: CarRentalService,
     private airportsService: AirportsService
-  ) {}
+  ) {
+    this.carRentalForm = this.fb.group({
+      pickupAirport: ['', Validators.required],
+      pickupDate: ['', Validators.required],
+      dropoffDate: ['', Validators.required],
+    });
+  }
 
   ngOnInit() {
     this.airportsService.getAirports().subscribe(
@@ -101,9 +54,18 @@ export class CarRentalFormComponent {
   }
 
   onSubmit() {
+    if (this.carRentalForm.invalid) {
+      this.carRentalForm.markAllAsTouched();
+      return;
+    }
+
+    this.empty = false;
     this.results = false;
     this.searching = true;
-    const airportCode = this.getAirportCode(this.pickupAirport);
+
+    const airportCode = this.getAirportCode(
+      this.carRentalForm.value.pickupAirport
+    );
 
     if (!airportCode) {
       console.error('Invalid airport code.');
@@ -115,21 +77,25 @@ export class CarRentalFormComponent {
       .pipe(
         concatMap((entityId) => {
           if (!entityId) {
+            this.searching = false;
+            this.empty = true;
             console.error('Entity ID not found.');
             return throwError('Entity ID not found.');
           }
-          console.log('Entity ID', entityId);
 
           return this.carRentalService
-            .getCarRentalCosts(entityId, this.pickupDate, this.dropoffDate)
+            .getCarRentalCosts(
+              entityId,
+              this.carRentalForm.value.pickupDate,
+              this.carRentalForm.value.dropoffDate
+            )
             .pipe(
-              delay(2000), // Wait for 10 seconds before making the second request
+              delay(2000), // Wait for 2 seconds before making the second request
               concatMap((carList) => {
-                // Make the second request
                 return this.carRentalService.getCarRentalCosts(
                   entityId,
-                  this.pickupDate,
-                  this.dropoffDate
+                  this.carRentalForm.value.pickupDate,
+                  this.carRentalForm.value.dropoffDate
                 );
               })
             );
@@ -151,10 +117,7 @@ export class CarRentalFormComponent {
   }
 
   private getAirportCode(airport: string): string {
-    // Split the airport string by '-'
     const parts = airport.split('-');
-    // Get the last part (which should be the airport code)
-    console.log(parts[parts.length - 1].trim());
     return parts[parts.length - 1].trim();
   }
 }
