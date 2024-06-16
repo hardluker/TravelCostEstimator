@@ -23,7 +23,10 @@ export class HotelsService {
     return this.http.get<any>(url, { headers }).pipe(
       map((response) => {
         const cityData = response.data.find(
-          (item: any) => item.class === 'City' || item.class === 'District'
+          (item: any) =>
+            item.class === 'City' ||
+            item.class === 'District' ||
+            item.class === 'Airport'
         );
         if (cityData) {
           return cityData.entityId;
