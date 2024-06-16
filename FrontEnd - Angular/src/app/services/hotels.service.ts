@@ -23,7 +23,7 @@ export class HotelsService {
     return this.http.get<any>(url, { headers }).pipe(
       map((response) => {
         const cityData = response.data.find(
-          (item: any) => item.class === 'City'
+          (item: any) => item.class === 'City' || item.class === 'District'
         );
         if (cityData) {
           return cityData.entityId;
@@ -39,6 +39,7 @@ export class HotelsService {
     checkin: string,
     checkout: string
   ): Observable<number> {
+    console.log('Entity ID: ', entityId);
     const url = `https://${this.apiHost}/hotels/search?entityId=${entityId}&checkin=${checkin}&checkout=${checkout}`;
     const headers = new HttpHeaders({
       'x-rapidapi-host': this.apiHost,
