@@ -12,11 +12,10 @@ export interface City {
   providedIn: 'root',
 })
 export class CitiesServiceService {
-  private apiUrl = 'http://localhost:8000/api/cities/';
-
   constructor(private http: HttpClient) {}
 
-  getCities(): Observable<City[]> {
-    return this.http.get<City[]>(this.apiUrl);
+  getCities(search: string): Observable<City[]> {
+    const apiUrl: string = `http://localhost:8000/api/cities/?search=${search}`;
+    return this.http.get<City[]>(apiUrl);
   }
 }
