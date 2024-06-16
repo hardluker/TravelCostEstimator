@@ -14,7 +14,7 @@ export interface Airport {
   providedIn: 'root',
 })
 export class AirportsService {
-  private apiUrl = 'http://localhost:8000/api/airports/';
+  private apiUrl = 'http://52.237.33.210:8000//api/airports/';
 
   constructor(private http: HttpClient) {}
 

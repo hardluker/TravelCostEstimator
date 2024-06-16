@@ -15,7 +15,7 @@ export class CitiesServiceService {
   constructor(private http: HttpClient) {}
 
   getCities(search: string): Observable<City[]> {
-    const apiUrl: string = `http://localhost:8000/api/cities/?search=${search}`;
+    const apiUrl: string = `http://52.237.33.210:8000/api/cities/?search=${search}`;
     return this.http.get<City[]>(apiUrl);
   }
 }
