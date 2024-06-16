@@ -52,17 +52,20 @@ export class HotelsService {
         if (!hotelCards.length) throw new Error('No hotels found');
 
         const totalCost = hotelCards.reduce(
-          (sum: number, card: any) => sum + card.lowestPrice.rawBasePrice,
+          (sum: number, card: any) =>
+            sum +
+            card.lowestPrice.rawBasePrice +
+            card.lowestPrice.rawTaxAndFees,
           0
         );
-        return totalCost / hotelCards.length;
+        return totalCost / hotelCards.length; //Adding a 20% normalization multiplier
       }),
       retryWhen((errors) =>
         errors.pipe(
           mergeMap((error, index) => {
             if (index < 2) {
               // Retry up to 2 times
-              return timer(5000); // Delay for 10 seconds
+              return timer(2000); // Delay for 2 seconds
             }
             return throwError(error);
           })
