@@ -1,27 +1,32 @@
-# Section 1: Generating the output production product
+### STAGE 1: Build ###
+FROM node:lts-alpine AS build
 
-# Using the official node image as the base image
-FROM node:18-alpine as build
+#### make the 'app' folder the current working directory
+WORKDIR /usr/src/app
 
-# Setting the working directory
-WORKDIR /app
+#### copy both 'package.json' and 'package-lock.json' (if available)
+COPY package*.json ./
 
-# Add the source code to the app
-COPY . .
+#### install angular cli
+RUN npm install -g @angular/cli
 
-# Installing the dependencies
+#### install project dependencies
 RUN npm install
 
-# Generating the build of the application
-RUN npm run build
+#### copy things
+COPY . .
 
-# Section 2: Copying from the build image to actually host the server
+#### generate build --prod
+RUN npm run build --prod
 
-# Using an apache image
-FROM httpd:alpine
+### STAGE 2: Run ###
+FROM nginxinc/nginx-unprivileged
 
-# Copy the build output to the apache server's working directory
-COPY --from=build /app/dist/travel-cost-estimator /usr/local/apache2/htdocs/
+#### copy nginx conf
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 
-# Exposing port 80
-EXPOSE 80
+#### copy artifact build from the 'build environment'
+COPY --from=build /usr/src/app/dist/travel-cost-estimator/browser /usr/share/nginx/html
+
+#### don't know what this is, but seems cool and techy
+CMD ["nginx", "-g", "daemon off;"]
