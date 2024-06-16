@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -21,6 +21,9 @@ import { throwError } from 'rxjs/internal/observable/throwError';
   styleUrls: ['./car-rental-form.component.css'],
 })
 export class CarRentalFormComponent {
+  //Setting up the output for the average cost
+  @Output() averageCostChanged = new EventEmitter<number>();
+
   carRentalForm: FormGroup;
   airports: string[] = [];
   searching: boolean = false;
@@ -109,6 +112,7 @@ export class CarRentalFormComponent {
           );
           this.averageCost = totalCost / carList.length;
           this.results = true;
+          this.averageCostChanged.emit(this.averageCost); // emitting the average cost
         } else {
           this.averageCost = 0;
         }
