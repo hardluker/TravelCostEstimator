@@ -113,9 +113,9 @@ import { HotelFormComponent } from '../hotel-form/hotel-form.component';
   styleUrls: ['./options.component.css'],
 })
 export class OptionsComponent {
-  showFlight1 = true;
+  showFlight1 = false;
   showFlight2 = false;
-  showCarRental = true;
+  showCarRental = false;
   showHotel = true;
 
   markupPercentage = 20.0;
