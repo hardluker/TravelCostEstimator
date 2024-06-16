@@ -1,6 +1,7 @@
 
 import csv
 from django.conf import settings
+from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
@@ -26,8 +27,10 @@ def airport_list(request):
     return Response(airports)
 
 
-@api_view(['GET'])
+
+
 def city_list(request):
+    search_string = request.GET.get('search', '')  # Get the value of the 'search' query parameter, default to empty string if not provided
     file_path = settings.BASE_DIR / 'assets' / 'uscities.csv'
     cities = []
 
@@ -35,14 +38,16 @@ def city_list(request):
         with open(file_path, mode='r') as file:
             csv_reader = csv.DictReader(file)
             for row in csv_reader:
-                cities.append({
-                    "city": row["city"],
-                    "state": row["state_name"],
-                    "county": row["county_name"]
-                })
+                city_name = row["city"]
+                if city_name and search_string.lower() in city_name.lower():
+                    cities.append({
+                        "city": city_name,
+                        "state": row["state_name"],
+                        "county": row["county_name"]
+                    })
     except FileNotFoundError:
-        return Response({"error": "CSV file not found"}, status=404)
+        return JsonResponse({"error": "CSV file not found"}, status=404)
     except Exception as e:
-        return Response({"error": str(e)}, status=500)
+        return JsonResponse({"error": str(e)}, status=500)
 
-    return Response(cities)
+    return JsonResponse(cities, safe=False)
