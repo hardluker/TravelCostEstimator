@@ -21,7 +21,8 @@ RUN npm run build
 FROM httpd:alpine
 
 # Copy the build output to the apache server's working directory
-COPY --from=build /app/dist/travel-cost-estimator /usr/local/apache2/htdocs/
+COPY --from=build /app/dist/travel-cost-estimator/browser /usr/local/apache2/htdocs/
+COPY --from=build /app/dist/travel-cost-estimator/index.server.html /usr/local/apache2/htdocs/
 
 # Exposing port 80
 EXPOSE 80
