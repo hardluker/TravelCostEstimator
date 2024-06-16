@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { CitiesServiceService, City } from '../services/cities-service.service';
 
 @Component({
   selector: 'app-hotel-form',
@@ -48,4 +49,19 @@ import { NgSelectModule } from '@ng-select/ng-select';
 })
 export class HotelFormComponent {
   cities: string[] = ['Columbia', 'Charleston'];
+
+  constructor(private citiesService: CitiesServiceService) {}
+
+  ngOnInit() {
+    this.citiesService.getCities().subscribe(
+      (data: City[]) => {
+        this.cities = data.map(
+          (city) => `${city.city}, ${city.state} - ${city.county}`
+        );
+      },
+      (error) => {
+        console.error('Error retrieving airport data:', error);
+      }
+    );
+  }
 }
