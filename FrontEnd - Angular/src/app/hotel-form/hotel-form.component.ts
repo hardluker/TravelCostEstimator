@@ -72,9 +72,9 @@ export class HotelFormComponent {
     const [cityState, county] = cityInput.split(' - ');
     const [city, state] = cityState.split(', ');
 
-    const sanitizedCity = city.replace(/\s/g, '%20');
-    const sanitizedState = state.replace(/\s/g, '%20');
-    const sanitizedCounty = county.replace(/\s/g, '%20');
+    const sanitizedCity = city.replace(/\s/g, '%20').replace(/\./g, '');
+    const sanitizedState = state.replace(/\s/g, '%20').replace(/\./g, '');
+    const sanitizedCounty = county.replace(/\s/g, '%20').replace(/\./g, '');
 
     const checkinDate = this.hotelForm.value.checkinDate;
     const checkoutDate = this.hotelForm.value.checkoutDate;
