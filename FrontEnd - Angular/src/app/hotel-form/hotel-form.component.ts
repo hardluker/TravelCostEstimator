@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @Component({
   selector: 'app-hotel-form',
   standalone: true,
-  imports: [],
+  imports: [NgSelectModule],
   template: `
     <div class="card border-left-primary shadow py-1 h-100 ">
       <div class="card-header py-3">
@@ -14,12 +15,11 @@ import { Component } from '@angular/core';
       >
         <div class="form-group">
           <label for="city">City</label>
-          <input
+          <ng-select
             id="city"
-            class="form-control form-control-user"
-            list="airports"
-            type="text"
-          />
+            formControlName="city"
+            [items]="cities"
+          ></ng-select>
         </div>
         <div class="form-group mt-auto">
           <label for="checkin-date">Check-In Date</label>
@@ -46,4 +46,6 @@ import { Component } from '@angular/core';
   `,
   styleUrl: './hotel-form.component.css',
 })
-export class HotelFormComponent {}
+export class HotelFormComponent {
+  cities: string[] = ['Columbia', 'Charleston'];
+}
