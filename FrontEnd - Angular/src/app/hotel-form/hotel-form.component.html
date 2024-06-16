@@ -1,0 +1,78 @@
+<div class="card border-left-primary shadow py-1 h-100">
+  <div class="card-header py-3">
+    <h6 class="m-0 font-weight-bold text-primary">Hotel</h6>
+  </div>
+  <form
+    [formGroup]="hotelForm"
+    class="card-body d-flex flex-column justify-content-between flex-grow-1"
+    (ngSubmit)="onSubmit()"
+  >
+    <div class="form-group">
+      <label for="city">City</label>
+      <ng-select id="city" formControlName="city" [items]="cities"></ng-select>
+      <div
+        *ngIf="
+          hotelForm.controls['city'].invalid &&
+          hotelForm.controls['city'].touched
+        "
+        class="text-danger"
+      >
+        City is required
+      </div>
+    </div>
+    <div class="form-group mt-auto">
+      <label for="checkin-date">Check-In Date</label>
+      <input
+        id="checkin-date"
+        formControlName="checkinDate"
+        class="form-control form-control-user"
+        type="date"
+      />
+      <div
+        *ngIf="
+          hotelForm.controls['checkinDate'].invalid &&
+          hotelForm.controls['checkinDate'].touched
+        "
+        class="text-danger"
+      >
+        Check-In Date is required
+      </div>
+    </div>
+    <div class="form-group mt-auto">
+      <label for="checkout-date">Check-Out Date</label>
+      <input
+        id="checkout-date"
+        formControlName="checkoutDate"
+        class="form-control form-control-user"
+        type="date"
+      />
+      <div
+        *ngIf="
+          hotelForm.controls['checkoutDate'].invalid &&
+          hotelForm.controls['checkoutDate'].touched
+        "
+        class="text-danger"
+      >
+        Check-Out Date is required
+      </div>
+    </div>
+    <div class="user form-group mt-auto">
+      <button
+        class="btn btn-primary"
+        type="submit"
+        [disabled]="searching || hotelForm.invalid"
+      >
+        Submit
+      </button>
+    </div>
+    <div
+      *ngIf="searching"
+      class="spinner-border text-primary"
+      role="status"
+    ></div>
+  </form>
+  <div *ngIf="averageCost !== null" class="alert alert-primary">
+    Average Cost: {{ averageCost | currency }}
+  </div>
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+</div>

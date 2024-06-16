@@ -1,56 +1,42 @@
-import { Component } from '@angular/core';
-import { NgSelectModule } from '@ng-select/ng-select';
+import { Component, OnInit } from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { CitiesServiceService, City } from '../services/cities-service.service';
+import { HotelsService } from '../services/hotels.service';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { CommonModule } from '@angular/common';
+import { catchError, concatMap } from 'rxjs/operators';
+import { throwError } from 'rxjs';
 
 @Component({
   selector: 'app-hotel-form',
   standalone: true,
-  imports: [NgSelectModule],
-  template: `
-    <div class="card border-left-primary shadow py-1 h-100 ">
-      <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Hotel</h6>
-      </div>
-      <form
-        class="card-body d-flex flex-column justify-content-between flex-grow-1"
-      >
-        <div class="form-group">
-          <label for="city">City</label>
-          <ng-select
-            id="city"
-            formControlName="city"
-            [items]="cities"
-          ></ng-select>
-        </div>
-        <div class="form-group mt-auto">
-          <label for="checkin-date">Check-In Date</label>
-          <input
-            id="checkin-date"
-            class="form-control form-control-user"
-            type="date"
-          />
-        </div>
-        <div class="form-group mt-auto">
-          <label for="checkout-date">Check-Out Date</label>
-          <input
-            id="checkout-date"
-            class="form-control form-control-user"
-            type="date"
-          />
-        </div>
-        <div class="user form-group mt-auto">
-          <input class="btn btn-primary" type="submit" />
-        </div>
-      </form>
-      <div class="alert alert-primary">Average Cost: $123.56</div>
-    </div>
-  `,
-  styleUrl: './hotel-form.component.css',
+  imports: [NgSelectModule, ReactiveFormsModule, CommonModule],
+  templateUrl: './hotel-form.component.html',
+  styleUrls: ['./hotel-form.component.css'],
 })
-export class HotelFormComponent {
-  cities: string[] = ['Columbia', 'Charleston'];
+export class HotelFormComponent implements OnInit {
+  hotelForm: FormGroup;
+  cities: string[] = [];
+  averageCost: number | null = null;
+  searching: boolean = false;
+  error: string | null = null;
 
-  constructor(private citiesService: CitiesServiceService) {}
+  constructor(
+    private fb: FormBuilder,
+    private citiesService: CitiesServiceService,
+    private hotelsService: HotelsService
+  ) {
+    this.hotelForm = this.fb.group({
+      city: ['', Validators.required],
+      checkinDate: ['', Validators.required],
+      checkoutDate: ['', Validators.required],
+    });
+  }
 
   ngOnInit() {
     this.citiesService.getCities().subscribe(
@@ -60,8 +46,61 @@ export class HotelFormComponent {
         );
       },
       (error) => {
-        console.error('Error retrieving airport data:', error);
+        console.error('Error retrieving city data:', error);
       }
     );
+  }
+
+  onSubmit() {
+    if (this.hotelForm.invalid) {
+      this.hotelForm.markAllAsTouched();
+      return;
+    }
+
+    this.searching = true;
+    this.error = null;
+    this.averageCost = null;
+
+    const cityInput = this.hotelForm.value.city;
+    const [cityState, county] = cityInput.split(' - ');
+    const [city, state] = cityState.split(', ');
+
+    const sanitizedCity = city.replace(/\s/g, '%20');
+    const sanitizedState = state.replace(/\s/g, '%20');
+    const sanitizedCounty = county.replace(/\s/g, '%20');
+
+    const checkinDate = this.hotelForm.value.checkinDate;
+    const checkoutDate = this.hotelForm.value.checkoutDate;
+
+    console.log(
+      'City:',
+      sanitizedCity,
+      'State:',
+      sanitizedState,
+      'County:',
+      sanitizedCounty
+    );
+
+    this.hotelsService
+      .getEntityId(sanitizedCity, sanitizedState)
+      .pipe(
+        catchError((error) => {
+          this.searching = false;
+          this.error = error.message;
+          return throwError(error);
+        }),
+        concatMap((entityId: string) =>
+          this.hotelsService.getHotelCosts(entityId, checkinDate, checkoutDate)
+        ),
+        catchError((error) => {
+          this.searching = false;
+          this.error = error.message;
+          return throwError(error);
+        })
+      )
+      .subscribe((averageCost: number) => {
+        this.searching = false;
+        this.averageCost = averageCost;
+      });
   }
 }
