@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -20,6 +20,9 @@ import { throwError } from 'rxjs';
   styleUrls: ['./hotel-form.component.css'],
 })
 export class HotelFormComponent {
+  //Output of the average cost
+  @Output() averageCostChanged = new EventEmitter<number>();
+
   hotelForm: FormGroup;
   cities: string[] = [];
   averageCost: number | null = null;
@@ -105,6 +108,7 @@ export class HotelFormComponent {
       .subscribe((averageCost: number) => {
         this.searching = false;
         this.averageCost = averageCost;
+        this.averageCostChanged.emit(this.averageCost); // emitting the average cost
       });
   }
 }

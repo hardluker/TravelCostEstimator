@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -20,6 +20,9 @@ import { finalize } from 'rxjs/operators';
   styleUrls: ['./flight-form.component.css'],
 })
 export class FlightFormComponent implements OnInit {
+  //Output of the average cost
+  @Output() averageCostChanged = new EventEmitter<number>();
+
   flightForm: FormGroup;
   averageCost: number = 0;
   searching: boolean = false;
@@ -114,6 +117,7 @@ export class FlightFormComponent implements OnInit {
                   } else {
                     this.results = true;
                   }
+                  this.averageCostChanged.emit(this.averageCost); // emitting the average cost
                 },
                 (error) => {
                   // Handle error here
