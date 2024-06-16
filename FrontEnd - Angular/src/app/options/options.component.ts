@@ -6,6 +6,8 @@ import { ResultsComponent } from '../results/results.component';
 import { CarRentalFormComponent } from '../car-rental-form/car-rental-form.component';
 import { HotelFormComponent } from '../hotel-form/hotel-form.component';
 
+type CostType = 'flight1' | 'flight2' | 'carRental' | 'hotel';
+
 @Component({
   selector: 'app-options',
   standalone: true,
@@ -93,31 +95,57 @@ import { HotelFormComponent } from '../hotel-form/hotel-form.component';
     <section class="container-fluid mt-3">
       <div class="row">
         <div class="col-lg-3 col-md-6 mb-3" *ngIf="showFlight1">
-          <app-flight-form></app-flight-form>
+          <app-flight-form
+            (averageCostChanged)="updateAverageCost('flight1', $event)"
+          ></app-flight-form>
         </div>
         <div class="col-lg-3 col-md-6 mb-3" *ngIf="showFlight2">
-          <app-flight-form></app-flight-form>
+          <app-flight-form
+            (averageCostChanged)="updateAverageCost('flight2', $event)"
+          ></app-flight-form>
         </div>
         <div class="col-lg-3 col-md-6 mb-3" *ngIf="showCarRental">
-          <app-car-rental-form></app-car-rental-form>
+          <app-car-rental-form
+            (averageCostChanged)="updateAverageCost('carRental', $event)"
+          ></app-car-rental-form>
         </div>
         <div class="col-lg-3 col-md-6 mb-3" *ngIf="showHotel">
-          <app-hotel-form></app-hotel-form>
+          <app-hotel-form
+            (averageCostChanged)="updateAverageCost('hotel', $event)"
+          ></app-hotel-form>
         </div>
       </div>
     </section>
     <section class="container-fluid">
-      <app-results></app-results>
+      <app-results
+        [costs]="costs"
+        [markupPercentage]="markupPercentage"
+        [additionalCosts]="additionalCosts"
+      ></app-results>
     </section>
   `,
   styleUrls: ['./options.component.css'],
 })
 export class OptionsComponent {
-  showFlight1 = false;
+  //Defining default form states
+  showFlight1 = true;
   showFlight2 = false;
-  showCarRental = false;
+  showCarRental = true;
   showHotel = true;
 
+  //Defining default costs
   markupPercentage = 20.0;
-  additionalCosts = 0.0; // Default value for additional costs
+  additionalCosts = 0.0;
+
+  costs: { [key in CostType]: number } = {
+    flight1: 0,
+    flight2: 0,
+    carRental: 0,
+    hotel: 0,
+  };
+
+  updateAverageCost(type: CostType, cost: number) {
+    console.log('Updating' + 'cost: ' + cost);
+    this.costs[type] = cost;
+  }
 }
