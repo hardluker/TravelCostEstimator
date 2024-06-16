@@ -14,5 +14,5 @@ header {
 }
 .brand-logo {
   width: auto; /* Adjust the width as needed */
-  height: 80%; /* Keeps the aspect ratio */
+  height: 100%; /* Keeps the aspect ratio */
 }
