@@ -7,7 +7,7 @@ from rest_framework.decorators import api_view
 
 @api_view(['GET'])
 def airport_list(request):
-    file_path = settings.BASE_DIR / 'assets' / 'usa-airports.csv'
+    file_path = settings.BASE_DIR / 'assets' / 'airports.csv'
     airports = []
 
     try:
