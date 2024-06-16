@@ -19,7 +19,7 @@ import { throwError } from 'rxjs';
   templateUrl: './hotel-form.component.html',
   styleUrls: ['./hotel-form.component.css'],
 })
-export class HotelFormComponent implements OnInit {
+export class HotelFormComponent {
   hotelForm: FormGroup;
   cities: string[] = [];
   averageCost: number | null = null;
@@ -38,17 +38,21 @@ export class HotelFormComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
-    this.citiesService.getCities().subscribe(
-      (data: City[]) => {
-        this.cities = data.map(
-          (city) => `${city.city}, ${city.state} - ${city.county}`
-        );
-      },
-      (error) => {
-        console.error('Error retrieving city data:', error);
-      }
-    );
+  onCityChange(city: string) {
+    console.log('Changing');
+    if (city.length >= 3) {
+      console.log('Querying');
+      this.citiesService.getCities(city).subscribe(
+        (data: City[]) => {
+          this.cities = data.map(
+            (city) => `${city.city}, ${city.state} - ${city.county}`
+          );
+        },
+        (error) => {
+          console.error('Error retrieving city data:', error);
+        }
+      );
+    }
   }
 
   onSubmit() {

@@ -9,7 +9,12 @@
   >
     <div class="form-group">
       <label for="city">City</label>
-      <ng-select id="city" formControlName="city" [items]="cities"></ng-select>
+      <ng-select
+        id="city"
+        formControlName="city"
+        [items]="cities"
+        (search)="onCityChange($event.term)"
+      ></ng-select>
       <div
         *ngIf="
           hotelForm.controls['city'].invalid &&
