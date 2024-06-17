@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
 import { AirportsService } from '../services/airports.service';
 import { Airport } from '../services/airports.service';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { concatMap, delay } from 'rxjs/operators';
+import { catchError, concatMap, delay } from 'rxjs/operators';
 import { throwError } from 'rxjs/internal/observable/throwError';
 
 @Component({
@@ -30,6 +30,7 @@ export class CarRentalFormComponent {
   results: boolean = false;
   empty: boolean = false;
   averageCost: number | null = null;
+  today = new Date();
 
   constructor(
     private fb: FormBuilder,
@@ -82,7 +83,6 @@ export class CarRentalFormComponent {
           if (!entityId) {
             this.searching = false;
             this.empty = true;
-            console.error('Entity ID not found.');
             return throwError('Entity ID not found.');
           }
 
@@ -93,15 +93,22 @@ export class CarRentalFormComponent {
               this.carRentalForm.value.dropoffDate
             )
             .pipe(
-              delay(2000), // Wait for 2 seconds before making the second request
-              concatMap((carList) => {
-                return this.carRentalService.getCarRentalCosts(
+              delay(2000),
+              concatMap((carList) =>
+                this.carRentalService.getCarRentalCosts(
                   entityId,
                   this.carRentalForm.value.pickupDate,
                   this.carRentalForm.value.dropoffDate
-                );
-              })
+                )
+              )
             );
+        }),
+        catchError((error) => {
+          console.error('Error fetching car rental costs:', error);
+          // Handle error here, like displaying a user message
+          this.searching = false;
+          this.empty = true;
+          return throwError(error); // Re-throw the error to propagate it further
         })
       )
       .subscribe((carList) => {
