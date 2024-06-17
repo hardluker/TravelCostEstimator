@@ -41,6 +41,8 @@ export class HotelFormComponent {
     });
   }
 
+  // A function that is called as the user types into the form.
+  // The backend is querying dynamically and only if the length is atleast 3 characters
   onCityChange(city: string) {
     console.log('Changing');
     if (city.length >= 3) {
@@ -58,16 +60,22 @@ export class HotelFormComponent {
     }
   }
 
+  //This is the function that is called once the form is submitted.
   onSubmit() {
     if (this.hotelForm.invalid) {
       this.hotelForm.markAllAsTouched();
       return;
     }
 
+    // Flags for displaying error messages and the spinner on the form
     this.searching = true;
     this.error = null;
+
+    // Resetting the average cost to null
     this.averageCost = null;
 
+    // Sanitizing the city, county, and state values.
+    // The spaces are replaced with %20, the .'s are replaced with nothing.
     const cityInput = this.hotelForm.value.city;
     const [cityState, county] = cityInput.split(' - ');
     const [city, state] = cityState.split(', ');
@@ -79,6 +87,7 @@ export class HotelFormComponent {
     const checkinDate = this.hotelForm.value.checkinDate;
     const checkoutDate = this.hotelForm.value.checkoutDate;
 
+    // Console logging for debugging sanitized inputs
     console.log(
       'City:',
       sanitizedCity,
