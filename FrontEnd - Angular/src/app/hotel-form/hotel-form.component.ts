@@ -97,23 +97,30 @@ export class HotelFormComponent {
       sanitizedCounty
     );
 
+    // Invoking the hotels service to get hotel costs
     this.hotelsService
+      // First, getting the entity ID from the API based on the city and state
       .getEntityId(sanitizedCity, sanitizedState)
+      //Next, piping that entity ID into the getHotelCosts
       .pipe(
+        //Catching errors, displaying the error, and cancelling the search.
         catchError((error) => {
           this.searching = false;
           this.error = error.message;
           return throwError(error);
         }),
+        //Passing the entity ID in the the getHotelCosts method.
         concatMap((entityId: string) =>
           this.hotelsService.getHotelCosts(entityId, checkinDate, checkoutDate)
         ),
+        //Catching errors and setting appropriate flags
         catchError((error) => {
           this.searching = false;
           this.error = error.message;
           return throwError(error);
         })
       )
+      // Subscribing to the average cost that is returned from the function to be used in the broader application.
       .subscribe((averageCost: number) => {
         this.searching = false;
         this.averageCost = averageCost;
