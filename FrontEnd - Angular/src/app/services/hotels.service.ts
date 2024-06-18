@@ -42,7 +42,7 @@ export class HotelsService {
     checkin: string,
     checkout: string
   ): Observable<number> {
-    console.log('Entity ID: ', entityId);
+    //console.log('Entity ID: ', entityId);
     const url = `https://${this.apiHost}/hotels/search?entityId=${entityId}&checkin=${checkin}&checkout=${checkout}`;
     const headers = new HttpHeaders({
       'x-rapidapi-host': this.apiHost,

@@ -44,9 +44,9 @@ export class HotelFormComponent {
   // A function that is called as the user types into the form.
   // The backend is querying dynamically and only if the length is atleast 3 characters
   onCityChange(city: string) {
-    console.log('Changing');
+    //console.log('Changing');
     if (city.length >= 3) {
-      console.log('Querying');
+      //console.log('Querying');
       this.citiesService.getCities(city).subscribe(
         (data: City[]) => {
           this.cities = data.map(
@@ -88,14 +88,14 @@ export class HotelFormComponent {
     const checkoutDate = this.hotelForm.value.checkoutDate;
 
     // Console logging for debugging sanitized inputs
-    console.log(
+    /*console.log(
       'City:',
       sanitizedCity,
       'State:',
       sanitizedState,
       'County:',
       sanitizedCounty
-    );
+    ); */
 
     // Invoking the hotels service to get hotel costs
     this.hotelsService
